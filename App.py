@@ -23,11 +23,11 @@ task = st.sidebar.radio(
     "Select a task:",
     [
         "About App",
-        "Support Vector Analysis",  # Changed from "Regression Analysis"
+        "Support Vector Analysis",  
         "Decision Tree Analysis",
-        "Random Forest Regression",  # New button for Random Forest Regression
-        "Ridge Regression",  # New button for Ridge Regression
-        "Model Performance Comparison",  # Updated button for model comparison
+        "Random Forest Regression", 
+        "Ridge Regression",  
+        "Model Performance Comparison",  
     ],
 )
 
@@ -122,7 +122,6 @@ elif task == "Support Vector Analysis":
             if region_filter:
                 filtered_data = filtered_data[filtered_data["region"].isin(region_filter)]
 
-        # Show filtered and unused data
         st.write("### Filtered Data Preview:")
         st.write(filtered_data)
 
@@ -130,8 +129,6 @@ elif task == "Support Vector Analysis":
         if not unused_data.empty:
             st.write("### Unused Data Preview:")
             st.write(unused_data)
-
-        # Preprocess data
         categorical_features = ["sex", "smoker", "region"]
         numerical_features = ["age", "bmi", "children"]
 
@@ -141,21 +138,17 @@ elif task == "Support Vector Analysis":
                 ("cat", OneHotEncoder(drop="first"), categorical_features),
             ]
         )
-
-        # Features and target
         X = filtered_data.drop("charges", axis=1)
         y = filtered_data["charges"]
 
-        # Split data
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-        # Define pipeline
         pipeline = Pipeline(steps=[
             ("preprocessor", preprocessor),
             ("model", SVR(kernel="rbf"))
         ])
 
-        # Hyperparameter tuning
+
         st.write("### Hyperparameter Tuning")
         param_grid = {
             "model__C": [0.1, 1, 10, 100],
@@ -166,14 +159,11 @@ elif task == "Support Vector Analysis":
         grid_search = GridSearchCV(pipeline, param_grid, cv=5, scoring="r2", verbose=1)
         grid_search.fit(X_train, y_train)
 
-        # Best model
         best_model = grid_search.best_estimator_
         st.write("Best Hyperparameters:", grid_search.best_params_)
 
-        # Predictions
         y_pred = best_model.predict(X_test)
 
-        # Metrics
         mse = mean_squared_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
 
@@ -181,7 +171,6 @@ elif task == "Support Vector Analysis":
         st.write(f"Mean Squared Error (MSE): {mse:.2f}")
         st.write(f"R-squared (R²): {r2:.2f}")
 
-        # Visualization
         fig, ax = plt.subplots()
         fig.set_size_inches(10, 6)
         ax.scatter(y_test, y_pred, alpha=0.7, edgecolors=(0, 0, 0))
@@ -480,19 +469,16 @@ elif task == "Model Performance Comparison":
 
         st.write("### Model Comparison Table")
         comparison_df = pd.DataFrame(model_results).T
-        comparison_df.sort_values("R2", ascending=False, inplace=True)  # Sort by R2
+        comparison_df.sort_values("R2", ascending=False, inplace=True)
         st.write(comparison_df)
 
-        # Visualization: Create bar plots for MSE and R2 comparison
         fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
-        # MSE Bar plot
         sns.barplot(x=comparison_df.index, y=comparison_df["MSE"], ax=axes[0], palette='Blues_d')
         axes[0].set_title("Mean Squared Error (MSE) Comparison")
         axes[0].set_ylabel("MSE")
         axes[0].set_xlabel("Model")
 
-        # R2 Bar plot
         sns.barplot(x=comparison_df.index, y=comparison_df["R2"], ax=axes[1], palette='Greens_d')
         axes[1].set_title("R2 Score Comparison")
         axes[1].set_ylabel("R2 Score")
