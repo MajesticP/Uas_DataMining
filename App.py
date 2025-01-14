@@ -48,11 +48,11 @@ if task == "About App":
     st.write('**NIM**: 211220029')
     st.write("### About This App")
     st.write("""
-    Welcome to the **Support Vector Analysis App**! This app allows you to:
+    Welcome to the **Model Perfomance Comparison APP**! This app allows you to:
     - Perform **SVM Support Vector Analysis**.
     - Analyze data using **Decision Tree Regression**.
-    - Perform **Random Forest Regression**.
-    - Perform **Ridge Regression**.
+    - Perform **Random Forest Regression Analysis**.
+    - Perform **Ridge Regression Analysis**.
     - Compare the performance of multiple models.
     - Visualize and filter your dataset with ease.
 
